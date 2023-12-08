@@ -8,6 +8,7 @@ In code I have a struct conforming to `Transferable`:
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(exportedContentType: .jpeg) { imageFromBundle in
             SentTransferredFile(imageFromBundle.url)
+        }
     }
 ```
 
