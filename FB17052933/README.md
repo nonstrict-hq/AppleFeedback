@@ -10,4 +10,8 @@ This example project starts an AVCaptureSession and waits for frames, until a ti
 
 For every other camera tested, this loops more than 100 times without problems, but for Apple Studio Display Camera, this fails after 24 times.
 
+This issue doesn't occur if:
+- A different app also uses the camera (it never shuts down)
+- Center Stage is active (either by user or app)
+
 Reproduced on 3 different physical Studio Display devices, different Macs and on macOS 14 and 15.

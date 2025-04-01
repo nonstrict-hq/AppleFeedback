@@ -40,7 +40,7 @@ struct ContentView: View {
                         do {
                             iteration += 1
                             try await Task.sleep(for: .seconds(1))
-                            let recorder = Recorder(device: device)
+                            let recorder = Recorder(device: device, iteration: iteration)
                             try await recorder.start()
                             try await Task.sleep(for: .seconds(1))
                         } catch {
@@ -63,9 +63,11 @@ struct ContentView: View {
 
 class Recorder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let device: AVCaptureDevice
+    let iteration: Int
 
-    init(device: AVCaptureDevice) {
+    init(device: AVCaptureDevice, iteration: Int) {
         self.device = device
+        self.iteration = iteration
     }
 
     private let queue = DispatchQueue(label: "videoQueue")
@@ -85,6 +87,18 @@ class Recorder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let sampleBuffer = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CMSampleBuffer, Error>) in
             let timeout = Task {
                 try await Task.sleep(for: .seconds(3))
+                print("TIMEOUT")
+                // This commented out workaround appears to work!
+//                if device.activeFormat.isCenterStageSupported && !device.isCenterStageActive {
+//                    print("Toggling center stage")
+//                    AVCaptureDevice.centerStageControlMode = .cooperative
+//                    AVCaptureDevice.isCenterStageEnabled.toggle()
+//                    AVCaptureDevice.isCenterStageEnabled.toggle()
+//                    try await Task.sleep(for: .seconds(3))
+//                } else {
+//                    print("Nothing to do")
+//                }
+                print("THROWING")
                 continuation.resume(throwing: TimeoutError(errorDescription: "No sample buffer received within 3 seconds"))
             }
 
@@ -95,7 +109,7 @@ class Recorder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
 
             session.startRunning()
         }
-        print("Sample buffer: \(sampleBuffer.presentationTimeStamp)")
+        print(iteration, "Sample buffer: \(sampleBuffer.presentationTimeStamp)")
         session.stopRunning()
     }
 
