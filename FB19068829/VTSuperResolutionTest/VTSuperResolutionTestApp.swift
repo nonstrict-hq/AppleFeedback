@@ -69,6 +69,12 @@ struct ContentView: View {
         let width = 1440
         let height = 1080
 
+
+        print("SCALE FACTORS", VTSuperResolutionScalerConfiguration.supportedScaleFactors)
+        print("LOWLATENCY", VTLowLatencySuperResolutionScalerConfiguration.supportedScaleFactors(frameWidth: 720, frameHeight: 540))
+
+//        configurtion = VTLowLatencySuperResolutionScalerConfiguration(frameWidth: width, frameHeight: height, scaleFactor: scaleFactor)
+
         // Try to create configuration with original dimensions
         configuration = VTSuperResolutionScalerConfiguration(
             frameWidth: width,
